@@ -1,1 +1,2 @@
 # infixtopostfix
+This project was given as an assignment to help with better understanding as to how stacks work. The goal was to recieve any infix string and convert it to a postfix string. Additionally, for extra points we could create a calculate method to execute the postfix string. 
