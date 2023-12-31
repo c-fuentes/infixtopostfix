@@ -33,12 +33,21 @@ public class InfixToPostfix2{
       2. When conditional is true return false
       3. Otherwise, return true
   */
+  //DOES NOT HANDLE Exponents
   public boolean precedence(String a, String b){
-    if((a.equals("*") && b.equals("(")) || (a.equals("/") && b.equals("(")) || (a.equals("+") && b.equals("(")) || (a.equals("-") && b.equals("(")) || 
-    (a.equals("+") && b.equals("*")) || (a.equals("-") && b.equals("*")) || (a.equals("-") && b.equals("/")) || (a.equals("+") && b.equals("/"))){
+    if(
+      (a.equals("*") && b.equals("(")) //Multiplication has lower precedence than Parenthesis
+      || (a.equals("/") && b.equals("(")) //Division has lower precedence than Parenthesis
+      || (a.equals("+") && b.equals("(")) //Addition has lower precedence than Parenthesis
+      || (a.equals("-") && b.equals("(")) //Subtraction has lower precedence than Parenthesis
+      || (a.equals("+") && b.equals("*")) //Addition has lower precedence than Multiplication
+      || (a.equals("-") && b.equals("*")) //Subtraction has lower precedence than Multiplication
+      || (a.equals("-") && b.equals("/")) //Subtraction has lower precedence than Division
+      || (a.equals("+") && b.equals("/")) //Addition has lower precedence than Division
+      ){
       return false;
     }
-    return true;
+    return true; //any other possiblity String a will have higher precedence
   }
   
   /**
@@ -68,23 +77,27 @@ public class InfixToPostfix2{
     Stack<String> operatorStack = new Stack();
     //currently counts spaces as a part of length, might wanna make a method that counts length without spaces
     String[] result = infix.split("\\s");
+    //loop that runs through the string, looking a each individual char
     for (int i = 0; i < result.length; i++) {
-      if (!result[i].equals(" ") && !result[i].equals("(") && !result[i].equals("*") && !result[i].equals("/") && !result[i].equals("+") && !result[i].equals("-")){//runs if its not an operator
+      //verifies that current char is not an operator (excluding ")" as it has a special function) or space
+      if (!result[i].equals(" ") && !result[i].equals("(") && !result[i].equals("*") && !result[i].equals("/") && !result[i].equals("+") && !result[i].equals("-")){
+        //will add any operands to the result aka postfix string
         if (!result[i].equals(")")){
           postfix += result[i];
         }
+        //will empty the operator stack when a ")" is reached or we get to the end of the string, while loop will stop when the stack is empty
         while(!operatorStack.isEmpty() && ( (result[i].equals(")")) || (i == result.length - 1))){
           postfix += operatorStack.pop();
         }
       }else{//runs if its an operator
-        if(!operatorStack.isEmpty() && (precedence(operatorStack.peek(), result[i]))){
-          if(!operatorStack.peek().equals("(")){
+        if(!operatorStack.isEmpty() && (precedence(operatorStack.peek(), result[i]))){//runs when stack has values and precedence of previous operator is higher than current operator
+          if(!operatorStack.peek().equals("(")){//adds operators when the previous operator is not "(" to postfix string
             postfix += operatorStack.pop();
           }else{
-            operatorStack.pop();
+            operatorStack.pop();//pops off "(" when it has higher precedence than the incoming operator
           }
         }
-        operatorStack.push(result[i]);
+        operatorStack.push(result[i]);//adds operators when stack is empty or when there is a lower precedence
       }
     }
     return postfix;
@@ -108,6 +121,7 @@ public class InfixToPostfix2{
       4. Check if addition, if so add
       5. Check if subtraction, if so subtract
   */
+  //WORK IN PROGRESS
   public double calculate(String postfix){
     //Uses the postfix to evaluate the expression with multiple conditionals to perform pemdas
     return 0;//just for compiling purposes
@@ -120,5 +134,8 @@ public class InfixToPostfix2{
     InfixToPostfix a = new InfixToPostfix();
     
     System.out.println(a.convertToPostfix("A * ( B + C )"));
+    System.out.println(a.convertToPostfix("A + B / C"));
+    System.out.println(a.convertToPostfix("A - B + C"));
+    System.out.println(a.convertToPostfix("A + ( B * C )"));
   }
 }
